@@ -12,6 +12,12 @@ npm run build    # gera dist/ (site estático, pode ir para qualquer hospedagem)
 npm run preview  # serve o build localmente
 ```
 
+## Publicação
+
+A cada push na `main` ou na branch `claude/react-spa-site-8k0czb`, o workflow
+`.github/workflows/pages.yml` compila e publica em https://bernardocsf-del.github.io/SITE-3M/
+(Requer Settings → Pages → Source: GitHub Actions.)
+
 ## Estrutura
 
 - `src/App.jsx` — esqueleto do gabinete (palco de 784 × 1678 px, escalado para a tela).
