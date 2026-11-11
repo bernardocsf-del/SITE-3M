@@ -3,6 +3,8 @@ import { CANS } from '../data/cans.js';
 import { PRESETS } from '../data/presets.js';
 import { money } from '../machine/engine.js';
 
+/* estilo do suporte dos packs: a (papelão), b (cesta preta), c (prateleira de latão), d (engradado de madeira). ?suporte=x troca para comparar. */
+const CARRIER = new URLSearchParams(location.search).get('suporte') || 'a';
 const BY_KEY = Object.fromEntries(CANS.map((c) => [c.key, c]));
 
 function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
@@ -18,6 +20,7 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
   return (
     <article className={'pk' + (available ? '' : ' off')} style={{ '--c1': colors[0], '--c2': colors[1] || colors[0], '--c3': colors[2] || colors[0] }}>
       <div className="pk-art" aria-hidden="true">
+        <div className="pk-handle" />
         <div className="pk-cans">
           {cans.map((c, i) => <img key={i} src={c.img} alt="" loading="lazy" style={{ '--i': i }} />)}
         </div>
@@ -56,7 +59,7 @@ export default function Presets({ snap, onAdd, onOpen }) {
         <h2 id="presets-h">Packs prontos</h2>
         <p>Sem tempo de escolher? A casa já montou. Adicione direto ao pedido ou leve para a máquina e troque as latas que quiser.</p>
       </header>
-      <div className="pk-grid">
+      <div className="pk-grid" data-carrier={CARRIER}>
         {PRESETS.map((p) => <PresetCard key={p.id} preset={p} stock={snap?.stock} inOrder={count(p.id)} onAdd={onAdd} onOpen={onOpen} />)}
       </div>
     </section>
