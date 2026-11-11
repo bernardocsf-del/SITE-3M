@@ -20,7 +20,7 @@ function fitName(n) {
   while (n.scrollWidth > n.clientWidth + 1 && fs > 20) { fs -= 1; n.style.fontSize = fs + 'px'; if (fs < 26) n.style.letterSpacing = '.8px'; }
 }
 
-export default function Display({ snap }) {
+export default function Display({ snap, compact }) {
   const c = snap?.sel || null;
   const out = c ? snap.selStock <= 0 : false;
   const full = (snap?.pack.length || 0) >= 6;
@@ -32,7 +32,7 @@ export default function Display({ snap }) {
     const n = nameRef.current;
     if (c) fitName(n); else n.style.fontSize = '';
   }, [c]);
-  useLayoutEffect(() => { setTick(tickRef.current, tick); }, [tick, snap?.flash]);
+  useLayoutEffect(() => { setTick(tickRef.current, tick); }, [tick, snap?.flash, compact]);
 
   return (
     <div className={'disp' + (c ? '' : ' idle')} id="disp" aria-live="polite" ref={dispRef}>
@@ -45,11 +45,11 @@ export default function Display({ snap }) {
         <span className="pill" id="d-style">{c ? (c.estilo || c.style || '') : 'Six pack'}</span>
         <span className="meta" id="d-meta">
           {c
-            ? c.vol + ' ml · ' + (c.abvTxt || c.abv) + ' · ' + (c.ibu ? c.ibu + ' ibu · ' : '') + 'restam ' + snap.selStock
-            : '10 rótulos · sour, IPA e imperial stout · 350 e 473 ml'}
+            ? c.vol + ' ml · ' + (c.abvTxt || c.abv) + ' · ' + (c.ibu && !compact ? c.ibu + ' ibu · ' : '') + 'restam ' + snap.selStock
+            : compact ? '10 rótulos · 350 e 473 ml' : '10 rótulos · sour, IPA e imperial stout · 350 e 473 ml'}
         </span>
         <span className={'hint' + (c && !out ? ' go' : '')} id="d-hint">
-          {c ? (out ? 'esgotado' : full ? 'pack cheio' : 'toque de novo para sugar') : ''}
+          {c ? (out ? 'esgotado' : full ? 'pack cheio' : compact ? 'toque de novo' : 'toque de novo para sugar') : ''}
         </span>
       </div>
       <div className="d-pitch" id="d-pitch">

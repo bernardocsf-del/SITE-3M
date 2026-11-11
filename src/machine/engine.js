@@ -8,6 +8,7 @@ import { ROWS, COLX, PARK_X, MAN_Y, SLOTX, PACK_FLOOR, packH, PA, PB, TX, GAL_EN
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 export const money = (v) => 'R$ ' + v.toFixed(2).replace('.', ',');
+const DEMO_STOCK = 12; /* estoque de demonstração por rótulo, até ligar na loja */
 export const packValue = (arr) => arr.reduce((a, i) => a + i.c.price, 0);
 
 function glass(d) {
@@ -34,7 +35,8 @@ export class Machine {
     this.cans = CANS.map((c) => ({ ...c }));
     this.cans.forEach((c) => { c.row = ROWS.find((r) => r.vol === c.vol) || ROWS[1]; c.ratio = c.vol === 473 ? 0.395 : 0.528; });
     ROWS.forEach((r) => { this.cans.filter((c) => c.row === r).forEach((c, i) => { c.col = i; c.code = r.key + (i + 1); }); });
-    this.stock = {}; this.cans.forEach((c) => (this.stock[c.id] = 4));
+    this.byKey = {}; this.cans.forEach((c) => (this.byKey[c.key] = c));
+    this.stock = {}; this.cans.forEach((c) => (this.stock[c.id] = DEMO_STOCK));
     this.S = { sel: null, pack: [], packs: [], seq: 0, busy: {}, q: {}, arm: {}, armAt: {} };
     this.ui = { flash: 0, chips: [], chipsVer: 0, toast: null, panel: null, idleMeta: true };
     this.snap = null;
@@ -57,7 +59,8 @@ export class Machine {
       selStock: S.sel ? this.stock[S.sel.id] : 0,
       flash: this.ui.flash,
       pack: S.pack.slice(),
-      packs: S.packs.map((p) => ({ items: p.items, qty: p.qty })),
+      packs: S.packs.map((p) => ({ items: p.items, qty: p.qty, name: p.name, preset: p.preset })),
+      stock: { ...this.stock },
       chips: this.ui.chips,
       chipsVer: this.ui.chipsVer,
       toast: this.ui.toast,
@@ -335,7 +338,7 @@ export class Machine {
   };
   canAfford(items) { const need = {}; items.forEach((i) => (need[i.c.id] = (need[i.c.id] || 0) + 1)); return Object.keys(need).every((id) => this.stock[id] >= need[id]); }
   renderChips() {
-    this.ui.chips = this.S.packs.map((p) => ({ items: p.items, qty: p.qty }));
+    this.ui.chips = this.S.packs.map((p) => ({ items: p.items, qty: p.qty, name: p.name }));
     this.ui.chipsVer++;
     this.emit();
   }
@@ -343,16 +346,45 @@ export class Machine {
     const p = this.S.packs[k];
     if (d > 0) { if (!this.canAfford(p.items)) { this.toast('Sem estoque para repetir este pack inteiro', true); return; } p.items.forEach((i) => this.stock[i.c.id]--); p.qty++; }
     else { if (p.qty <= 1) { this.undoPack(k); return; } p.items.forEach((i) => this.stock[i.c.id]++); p.qty--; }
+    this.syncTubes();
+    this.renderChips();
+  };
+  /* depois de mexer no estoque por fora da viagem: some/volta a lata da vitrine */
+  syncTubes() {
     this.cans.forEach((c) => {
       if (this.stock[c.id] > 0) this.restoreTube(c);
       else { const el = this.$('can-' + c.id); if (!el.classList.contains('out') && !this.S.busy[c.id]) this.markOut(c); }
     });
-    this.renderChips();
+  }
+
+  /* ---------- packs prontos ---------- */
+  presetItems(preset) { return preset.cans.map((key) => ({ c: this.byKey[key], uid: ++this.S.seq })); }
+  canAffordPreset(preset) { return this.canAfford(preset.cans.map((key) => ({ c: this.byKey[key] }))); }
+  /* entra direto nos packs fechados; repetir o mesmo pack pronto só soma a quantidade */
+  addPreset = (preset) => {
+    const S = this.S;
+    if (!this.canAffordPreset(preset)) { this.toast('Sem estoque para o ' + preset.name, true); return false; }
+    const same = S.packs.find((p) => p.preset === preset.id);
+    const items = same ? same.items : this.presetItems(preset);
+    items.forEach((i) => this.stock[i.c.id]--);
+    if (same) same.qty++; else S.packs.push({ items, qty: 1, name: preset.name, preset: preset.id });
+    this.syncTubes(); this.renderChips(); this.toast(preset.name + ' no pedido');
+    return true;
+  };
+  /* põe as 6 latas na bandeja para trocar alguma antes de fechar */
+  loadPreset = (preset) => {
+    const S = this.S;
+    if (S.pack.length) { this.toast('Esvazie a bandeja para abrir um pack pronto', true); return false; }
+    if (!this.canAffordPreset(preset)) { this.toast('Sem estoque para o ' + preset.name, true); return false; }
+    S.pack = this.presetItems(preset);
+    S.pack.forEach((it) => { this.stock[it.c.id]--; this.placeInPack(it); });
+    this.syncTubes(); this.emit(); this.toast(preset.name + ' na bandeja · troque o que quiser');
+    return true;
   };
   undoPack = (k) => {
     const p = this.S.packs.splice(k, 1)[0];
     for (let n = 0; n < p.qty; n++) p.items.forEach((it) => this.stock[it.c.id]++);
-    this.cans.forEach((c) => this.restoreTube(c)); this.renderChips(); this.toast('Pack desfeito · latas de volta à máquina');
+    this.syncTubes(); this.renderChips(); this.toast('Pack desfeito · latas de volta à máquina');
   };
   reopenPack = (k) => {
     const S = this.S;
@@ -360,7 +392,7 @@ export class Machine {
     const p = S.packs[k];
     if (p.qty > 1) { p.qty--; S.pack = p.items.map((i) => ({ c: i.c, uid: ++S.seq })); }
     else { S.packs.splice(k, 1); S.pack = p.items; }
-    S.pack.forEach((it) => this.placeInPack(it)); this.renderChips(); this.toast('Pack ' + (k + 1) + ' de volta à bandeja');
+    S.pack.forEach((it) => this.placeInPack(it)); this.renderChips(); this.toast((p.name || 'Pack ' + (k + 1)) + ' de volta à bandeja');
   };
   toast(msg, warn) { this.ui.toast = { msg, warn: !!warn, id: (this.ui.toast?.id || 0) + 1 }; this.emit(); }
 

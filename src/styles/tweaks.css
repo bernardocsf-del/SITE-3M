@@ -1,0 +1,56 @@
+/* Legibilidade e toque, por cima do CSS original da máquina.
+   O palco tem 784 px e encolhe para caber: num celular de 390 px tudo fica pela metade.
+   `.stage.compact` (tela estreita) dá corpo aos textos pequenos; os controles de dedo ficam fora do palco. */
+
+/* ── sempre: os menores textos e alvos sobem um pouco ── */
+.pinfo .lbl small{font-size:11px;letter-spacing:1.2px}
+.pinfo .val small{font-size:13px}
+.chip .cv small{font-size:10.5px;letter-spacing:1px}
+.chip .qty button{width:28px;height:28px;font-size:18px}
+.chip .qty b{min-width:24px;font-size:18px}
+.chip .x{width:26px;height:26px;line-height:26px;font-size:16px}
+.chip .minis{height:40px}
+.rack .empty{font-size:12px}
+
+/* ── tela estreita ── */
+.stage.compact .disp{padding:10px 20px!important;row-gap:4px!important}
+.stage.compact .d-price small{font-size:16px!important;letter-spacing:1.5px}
+.stage.compact .d-row2{font-size:18px!important;letter-spacing:.6px;gap:9px}
+.stage.compact .pill{font-size:15px;letter-spacing:.8px;padding:2px 10px}
+.stage.compact .d-pitch{font-size:22px!important;line-height:25px!important;-webkit-line-clamp:2!important}
+.stage.compact .d-tick{font-size:18px!important;line-height:22px!important;letter-spacing:1px}
+
+.stage.compact .tag{font-size:21px;gap:7px}
+.stage.compact .tag b{font-size:15px;padding:1px 6px}
+.stage.compact .tag i{font-size:13px}
+.stage.compact .tag.out span{font-size:14px;letter-spacing:1px}
+
+.stage.compact .pinfo{padding:0 16px;column-gap:10px}
+.stage.compact .pinfo .lbl{font-size:21px;letter-spacing:2px}
+.stage.compact .pinfo .lbl small{font-size:14.5px;letter-spacing:.4px;margin-top:2px}
+.stage.compact .pinfo .val{font-size:28px}
+.stage.compact .pinfo .val small{font-size:18px;margin-left:8px}
+.stage.compact .pinfo .cnt{font-size:16px;letter-spacing:1px}
+.stage.compact .pinfo .cnt em{font-size:30px}
+
+.stage.compact #b-close .bs{font-size:16.5px!important;letter-spacing:1px!important;line-height:1.15}
+.stage.compact #b-cart{font-size:27px;letter-spacing:2px}
+.stage.compact .ro.total{padding:8px 18px 7px!important}
+.stage.compact .ro.total .k{font-size:17px;letter-spacing:3px}
+.stage.compact .ro.total .v{font-size:32px}
+.stage.compact .ro.total .v small{font-size:16px;letter-spacing:.8px;flex-basis:104px}
+
+.stage.compact .rack .slbl{font-size:18px;letter-spacing:1.5px;width:92px}
+.stage.compact .rack .empty{font-size:16px;letter-spacing:.8px}
+.stage.compact .chip{cursor:pointer;padding:0 12px 0 8px}
+.stage.compact .chip .qty,.stage.compact .chip .x{display:none}
+.stage.compact .chip .minis{cursor:inherit}
+.stage.compact .chip .cv{font-size:21px}
+.stage.compact .chip .cv small{font-size:14px;letter-spacing:.5px}
+
+.stage.compact .toast{font-size:19px;letter-spacing:.8px;padding:10px 20px;max-width:700px;overflow:hidden;text-overflow:ellipsis}
+.stage.compact .panel{top:52px;height:178px;padding:14px 20px;gap:6px}
+.stage.compact .panel h3{font-size:27px}
+.stage.compact .panel .list{font-size:18px;line-height:1.25}
+.stage.compact .panel .row{font-size:25px;padding-top:6px}
+.stage.compact .panel button{font-size:24px;padding:6px 22px;right:16px;top:12px;border-radius:8px}
