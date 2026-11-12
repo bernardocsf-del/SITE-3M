@@ -171,14 +171,9 @@
 .tag .pct{padding:0;background:none;box-shadow:none;border-radius:0;font-size:.78em;letter-spacing:.3px;color:#ff6a4d;text-shadow:0 0 5px rgba(255,90,60,.9),0 0 14px rgba(255,70,40,.5)}
 .tag.sale span,.tag.sale.sel span{color:#ffb39e;text-shadow:0 0 5px rgba(255,110,80,.8),0 0 14px rgba(255,90,60,.4)}
 
-/* ── topo: "SIX PACK" à esquerda do selo e "MACHINE" à direita, na Motor Oil (a fonte do logotipo).
-   É texto de verdade, preenchido com a textura de latão da placa da máquina e com relevo, para ficar preso no aço. ── */
-.crown .eng{top:-24px!important;width:270px!important;height:66px!important;font-family:var(--logo)!important;font-weight:400!important;font-style:normal!important;
-  font-size:47px!important;line-height:66px!important;letter-spacing:3px!important;text-align:center!important;text-transform:uppercase;white-space:nowrap;
-  color:transparent!important;-webkit-text-fill-color:transparent;
-  background:linear-gradient(180deg,rgba(255,250,220,.55) 0,rgba(255,244,200,0) 34%,rgba(60,40,5,.0) 58%,rgba(50,32,4,.5) 100%),url(../assets/img/crown-plate-2.webp) center/190% 420% no-repeat!important;
-  -webkit-background-clip:text!important;background-clip:text!important;
-  filter:drop-shadow(0 -1px 0 rgba(255,246,208,.6)) drop-shadow(0 2px 0 #3a2a08) drop-shadow(0 3px 0 rgba(0,0,0,.55)) drop-shadow(0 6px 6px rgba(0,0,0,.6))}
-.crown .eng.l,.crown .eng.r{font-size:54px!important;letter-spacing:3px!important;line-height:66px!important}
-.crown .eng.l{left:40px!important;right:auto!important}
-.crown .eng.r{right:40px!important;left:auto!important;top:-24px!important}
+/* ── topo: "SIX PACK" à esquerda do selo e "MACHINE" à direita.
+   As letras são a Motor Oil (fonte do logotipo) transformada em latão fundido no Canva a partir do texto escrito na própria fonte. ── */
+.crown .eng{top:-21px!important;width:262px!important;height:58px!important;background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.9)) drop-shadow(0 5px 6px rgba(0,0,0,.55))}
+.crown .eng.l{left:46px!important;right:auto!important;background-image:url(../assets/img/top-six-pack.webp)!important}
+.crown .eng.r{right:46px!important;left:auto!important;top:-21px!important;background-image:url(../assets/img/top-machine.webp)!important}
