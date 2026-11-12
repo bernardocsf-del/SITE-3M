@@ -45,7 +45,6 @@ export default function Display({ snap, compact, catalog }) {
         {c ? <><small>{offPct(c) ? <><s>{money(c.regular)}</s> −{offPct(c)}%</> : 'a lata'}</small>{money(c.price)}</> : <><small>preço</small>R$ --,--</>}
       </div>
       <div className="d-row2">
-        <span className="code" id="d-code">{c ? c.code : '—'}</span>
         <span className="pill" id="d-style">{c ? (c.estilo || c.style || '') : 'Six pack'}</span>
         <span className="meta" id="d-meta">
           {c

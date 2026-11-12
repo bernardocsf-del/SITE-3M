@@ -104,14 +104,15 @@ export class Machine {
     this.cans.forEach((c) => {
       const r = c.row, w = c.h * c.ratio, x = c.x;
       const el = document.createElement('div'); el.className = 'c-can'; el.id = 'can-' + c.id; el.tabIndex = 0;
-      el.setAttribute('role', 'button'); el.setAttribute('aria-label', c.code + ' ' + (c.disp || c.name));
+      el.setAttribute('role', 'button'); el.setAttribute('aria-label', (c.disp || c.name) + ', ' + money(c.price));
       el.style.cssText = 'left:' + (x - w / 2) + 'px;top:' + (r.floor - c.h) + 'px;height:' + c.h + 'px;width:' + w + 'px';
-      el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">' + (offPct(c) ? '<span class="off">−' + offPct(c) + '%</span>' : '');
+      el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">';
       el.addEventListener('click', () => this.tap(c));
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); this.tap(c); } });
       $('cans').appendChild(el);
       const tag = document.createElement('div'); tag.className = 'tag' + (offPct(c) ? ' sale' : '') + (c.count > 5 ? ' tight' : ''); tag.id = 'tag-' + c.id;
-      tag.innerHTML = '<b>' + c.code + '</b><span><i>R$</i>' + c.price.toFixed(2).replace('.', ',') + '</span>';
+      /* etiqueta: só o preço, num visorzinho aceso; em promoção, o percentual vem antes */
+      tag.innerHTML = (offPct(c) ? '<em class="pct">−' + offPct(c) + '%</em>' : '') + '<span><i>R$</i>' + c.price.toFixed(2).replace('.', ',') + '</span>';
       tag.addEventListener('click', () => this.tap(c));
       $('lip-' + r.key).appendChild(tag);
     });
@@ -293,7 +294,7 @@ export class Machine {
     const c = it.c, slot = this.S.pack.indexOf(it), H = packH(c), w = H * c.ratio;
     const el = document.createElement('div'); el.className = 'pcan'; el.id = 'p-' + it.uid;
     el.style.cssText = 'left:' + (SLOTX[slot] - w / 2) + 'px;top:' + (PACK_FLOOR - H) + 'px;height:' + H + 'px;width:' + w + 'px';
-    el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">'; el.title = 'Devolver ' + c.code;
+    el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">'; el.title = 'Devolver ' + (c.disp || c.name);
     el.addEventListener('click', () => this.giveBack(it));
     this.$('pcans').appendChild(el); this.relayout();
   }
@@ -312,7 +313,7 @@ export class Machine {
     const S = this.S, i = S.pack.indexOf(it); if (i < 0) return;
     S.pack.splice(i, 1); this.stock[it.c.id]++;
     const el = this.$('p-' + it.uid); if (el) { el.classList.add('back'); setTimeout(() => { el.remove(); this.relayout(); }, 340); }
-    this.restoreTube(it.c); this.toast(it.c.code + ' devolvida à máquina'); this.emit();
+    this.restoreTube(it.c); this.toast((it.c.disp || it.c.name) + ' devolvida à máquina'); this.emit();
   }
 
   /* ---------- packs fechados, cada um com quantidade ---------- */

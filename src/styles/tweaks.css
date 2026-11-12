@@ -135,3 +135,24 @@
 /* ── prateleira com mais de 5 rótulos: etiquetas mais enxutas ── */
 .tag.tight{font-size:14px;gap:5px}.tag.tight b{font-size:10px;padding:1px 4px}.tag.tight i{display:none}
 .stage.compact .tag.tight{font-size:18px;gap:5px}.stage.compact .tag.tight b{font-size:13px;padding:1px 4px}
+
+/* ── etiquetas de preço como visorzinhos: só o preço, aceso, em moldura de latão ──
+   (o código A1, B2… saiu para dar espaço; a promoção aparece aqui e no visor principal, sem selo na lata) */
+.shelf .lip{height:32px;padding:3px 5px;gap:6px;background:linear-gradient(180deg,#2c2c2c,#141414);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 8px rgba(0,0,0,.5)}
+.tag{position:relative;gap:7px;border-right:0;border-radius:5px;font-size:20px;letter-spacing:.5px;color:var(--lit-hi);text-shadow:0 0 5px var(--lit-glow),0 0 14px var(--lit-glow-2);
+  background:radial-gradient(120% 160% at 50% 50%,#1c1306 0%,#0c0903 60%,#050402 100%);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.95),inset 0 0 12px rgba(255,160,50,.10),0 0 0 1px #000,0 0 0 2.5px #a88f45,0 0 0 3.5px #3a2f10;transition:box-shadow .2s}
+.tag::after{content:"";position:absolute;inset:0;border-radius:5px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.10) 0,transparent 45%),repeating-linear-gradient(0deg,rgba(0,0,0,.42) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(0,0,0,.26) 0 1px,transparent 1px 3px)}
+.tag i{font-size:.55em;opacity:.75;margin-right:3px;font-style:normal}
+.tag.sel{box-shadow:inset 0 2px 5px rgba(0,0,0,.95),inset 0 0 14px rgba(255,170,60,.28),0 0 0 1px #000,0 0 0 2.5px #f3e3a6,0 0 0 3.5px #3a2f10,0 0 12px rgba(224,205,142,.55)}
+.tag.sale span{color:#ffb39e;text-shadow:0 0 5px rgba(255,110,80,.8),0 0 14px rgba(255,90,60,.4)}
+.tag .pct{font-style:normal;font-family:var(--title);font-weight:800;font-size:.68em;line-height:1;letter-spacing:0;padding:3px 5px 2px;border-radius:3px;color:#fff;background:#d8432c;text-shadow:none;box-shadow:0 0 8px rgba(255,90,60,.55)}
+.tag.out{color:rgba(255,217,138,.45);text-shadow:none}
+.tag.out span{color:inherit;font-size:.6em;letter-spacing:1.5px;font-weight:700;text-shadow:none}
+.tag.out .pct{display:none}
+.tag.tight{font-size:16px;gap:5px}
+.stage.compact .tag{font-size:25px;gap:8px}
+.stage.compact .tag i{font-size:.52em}
+.stage.compact .tag.tight{font-size:19px;gap:5px}
+.stage.compact .tag.out span{font-size:.56em;letter-spacing:1px}
