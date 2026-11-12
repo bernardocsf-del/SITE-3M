@@ -18,9 +18,9 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
   const add = () => { if (onAdd(preset)) { setAdded(true); setTimeout(() => setAdded(false), 1400); } };
 
   return (
-    <article className={'pk' + (available ? '' : ' off')} style={{ '--c1': colors[0], '--c2': colors[1] || colors[0], '--c3': colors[2] || colors[0] }}>
+    <article className={'pk' + (available ? '' : ' off')} style={{ '--c1': colors[0], '--c2': colors[1] || colors[0], '--c3': colors[2] || colors[0], '--glow': preset.glow || colors[0] }}>
       <div className="pk-art" aria-hidden="true">
-        <div className="pk-sign"><b>{preset.name}</b></div>
+        <div className="pk-sign">{preset.neon && <img src={preset.neon} alt="" loading="lazy" />}<b>{preset.name}</b></div>
         <div className="pk-handle" />
         <div className="pk-cans">
           {cans.map((c, i) => <img key={i} src={c.img} alt="" loading="lazy" style={{ '--i': i }} />)}

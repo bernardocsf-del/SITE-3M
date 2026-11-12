@@ -1,8 +1,18 @@
+/* Os letreiros de neon e a parede dos cards foram gerados no Canva (design "Oficina Six Pack Machine – peças dos cards"). */
+import neon_low_cal from '../assets/neon/low-cal.webp';
+import neon_sour_power from '../assets/neon/sour-power.webp';
+import neon_classic_trio from '../assets/neon/classic-trio.webp';
+import neon_hop_trip from '../assets/neon/hop-trip.webp';
+import neon_paranoid_night from '../assets/neon/paranoid-night.webp';
+import neon_tour_da_casa from '../assets/neon/tour-da-casa.webp';
+
 /* Packs prontos: 6 latas cada, pelo `key` de src/data/cans.js.
    O preço é sempre a soma das latas (sem desconto próprio). */
 export const PRESETS = [
   {
     id: 'low-cal',
+    neon: neon_low_cal,
+    glow: '#2f8bff',
     name: 'Low Cal Pack',
     tag: 'Leve',
     line: '3 Free + 3 Summer',
@@ -11,6 +21,8 @@ export const PRESETS = [
   },
   {
     id: 'sour-power',
+    neon: neon_sour_power,
+    glow: '#ff2fc0',
     name: 'Sour Power',
     tag: 'Azedinhas',
     line: "2 I'm Sour + 2 Baby + 2 F#cking",
@@ -19,6 +31,8 @@ export const PRESETS = [
   },
   {
     id: 'classic-trio',
+    neon: neon_classic_trio,
+    glow: '#ff7a1a',
     name: 'Classic Trio',
     tag: 'Linha fixa',
     line: '2 Classic + 2 Summer + 2 Free',
@@ -27,6 +41,8 @@ export const PRESETS = [
   },
   {
     id: 'hop-trip',
+    neon: neon_hop_trip,
+    glow: '#2fe05a',
     name: 'Hop Trip',
     tag: 'Lupuladas',
     line: '2 Classic + 2 Galaxy Detox + 2 Milky Way',
@@ -35,6 +51,8 @@ export const PRESETS = [
   },
   {
     id: 'paranoid-night',
+    neon: neon_paranoid_night,
+    glow: '#ff3d6e',
     name: 'Paranoid Night',
     tag: 'Imperial Stout 12%',
     line: '3 Popcorn + 3 Coconut and Coffee',
@@ -43,6 +61,8 @@ export const PRESETS = [
   },
   {
     id: 'tour-da-casa',
+    neon: neon_tour_da_casa,
+    glow: '#ffb21a',
     name: 'Tour da Casa',
     tag: 'Um de cada',
     line: 'Sour, IPAs e Imperial Stout',

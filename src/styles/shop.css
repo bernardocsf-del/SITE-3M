@@ -176,31 +176,29 @@
 [data-carrier="f"] .pk-carrier b{font-size:clamp(15px,5cqw,23px);color:transparent;background:linear-gradient(180deg,#f5e2a5,#c7a65a 55%,#876b32);-webkit-background-clip:text;background-clip:text;text-shadow:none}
 [data-carrier="f"] .pk-carrier i{display:none}
 
-/* g · neon (padrão): o nome aceso na parede de tijolo da própria máquina (a peça do Canva, recortada do nicho da vitrine),
-   latas na prateleira de vidro com a régua escura da máquina */
+/* g · neon (padrão): parede do nicho e letreiros de neon gerados no Canva.
+   A parede já traz a fita de LED, as laterais iluminadas e a prateleira de vidro; o letreiro vem em fundo preto
+   e entra em modo "screen", que deixa passar só a luz. */
 [data-carrier="g"] .pk-art{
   background:
-    radial-gradient(70% 34% at 50% 22%,color-mix(in srgb,var(--c1) 36%,transparent),transparent 72%),
-    radial-gradient(55% 60% at 14% 70%,color-mix(in srgb,var(--c1) 22%,transparent),transparent 70%),
-    radial-gradient(55% 60% at 86% 70%,color-mix(in srgb,var(--c2) 22%,transparent),transparent 70%),
-    linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,0) 30%,rgba(0,0,0,.35)),
-    url(../assets/img/pk-wall.webp) center top/cover no-repeat,#14110d}
-[data-carrier="g"] .pk-art::before{display:none} /* a fita de LED já vem na foto da parede */
-[data-carrier="g"] .pk-sign{display:flex;justify-content:center;position:absolute;left:0;right:0;top:17%}
-[data-carrier="g"] .pk-sign b{font-family:var(--title);font-weight:800;font-style:oblique;font-size:clamp(22px,8.2cqw,36px);line-height:1;letter-spacing:2.5px;text-transform:uppercase;white-space:nowrap;color:#fff;
-  text-shadow:0 0 4px #fff,0 0 12px color-mix(in srgb,var(--c1) 70%,#fff),0 0 26px var(--c1),0 0 54px var(--c1),0 0 90px var(--c1);animation:neon 5s infinite}
-@keyframes neon{0%,91%,95%,100%{opacity:1}93%{opacity:.72}}
-@media (prefers-reduced-motion:reduce){[data-carrier="g"] .pk-sign b{animation:none}}
-[data-carrier="g"] .pk-cans{bottom:9%}
-[data-carrier="g"] .pk-cans img{-webkit-box-reflect:below 0 linear-gradient(transparent 90%,rgba(255,255,255,.16))}
-[data-carrier="g"] .pk-carrier{height:9%;justify-content:center;padding:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.5) 0,rgba(200,230,255,.2) 4%,rgba(255,255,255,.08) 12%,rgba(0,0,0,.3) 26%,#2a2a2a 27%,#171717 100%);
-  box-shadow:0 -10px 16px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.5)}
-[data-carrier="g"] .pk-carrier b,[data-carrier="g"] .pk-carrier i,[data-carrier="g"] .pk-carrier em{display:none!important}
+    radial-gradient(64% 36% at 50% 24%,color-mix(in srgb,var(--glow) 34%,transparent),transparent 72%),
+    radial-gradient(90% 40% at 50% 96%,color-mix(in srgb,var(--glow) 16%,transparent),transparent 75%),
+    url(../assets/img/pk-wall.webp) center/100% 100% no-repeat,#14110d}
+[data-carrier="g"] .pk-art::before{display:none}
+[data-carrier="g"] .pk-art::after{background:linear-gradient(104deg,rgba(255,255,255,.07) 0,rgba(255,255,255,0) 24%,rgba(255,255,255,0) 76%,rgba(255,255,255,.05) 100%)}
+[data-carrier="g"] .pk-sign{display:block;position:absolute;left:13%;right:13%;top:8.5%;mix-blend-mode:screen}
+[data-carrier="g"] .pk-sign img{display:block;width:100%;height:auto;max-width:none;animation:neon 6s infinite}
+[data-carrier="g"] .pk-sign b{display:none}
+@keyframes neon{0%,91%,95%,100%{opacity:1}93%{opacity:.7}}
+@media (prefers-reduced-motion:reduce){[data-carrier="g"] .pk-sign img{animation:none}}
+[data-carrier="g"] .pk-cans{bottom:11.5%}
+[data-carrier="g"] .pk-cans img{filter:drop-shadow(0 8px 7px rgba(0,0,0,.55))}
+[data-carrier="g"] .pk-carrier{display:none}
 /* o neon já é o título: o h3 fica só para leitores de tela */
 [data-carrier="g"] .pk-body h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 [data-carrier="g"] .pk-line{margin-top:0;font-size:19px}
-[data-carrier="g"] .pk-carrier em{display:block;margin-top:5.5%;font-style:normal;font-family:var(--title);font-weight:700;font-size:clamp(10px,3.1cqw,13px);letter-spacing:2px;text-transform:uppercase;color:rgba(252,248,205,.7);white-space:nowrap}
+[data-carrier="g"] .pk-tag{top:8px;left:8px;font-size:11px;padding:4px 9px}
+[data-carrier="g"] .pk-count{top:8px;right:8px;font-size:11px;padding:4px 9px}
 
 /* h · engradado aberto: ripas atrás das latas e uma tábua na frente com o nome marcado */
 [data-carrier="h"] .pk-sign{display:block;position:absolute;left:3%;right:3%;top:34%;bottom:10%;

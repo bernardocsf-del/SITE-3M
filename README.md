@@ -27,6 +27,8 @@ A cada push na `main` ou na branch `claude/react-spa-site-8k0czb`, o workflow
 - `src/data/cans.js` — os 10 rótulos (nome, preço, ficha). **Os preços são os do artefato**; o estoque é de demonstração (12 por rótulo, em `engine.js`).
 - `src/data/presets.js` — os packs prontos (nome, texto e as 6 latas de cada um; o preço é a soma das latas).
 - `src/components/Presets.jsx`, `Order.jsx`, `ActionBar.jsx` — packs prontos, "Seu pedido" e a barra fixa, fora do palco escalado (botões de 48 px).
+- `src/assets/neon/` e `src/assets/img/pk-wall.webp` — letreiros de neon e parede dos cards, gerados no Canva (design "Oficina Six Pack Machine – peças dos cards": https://www.canva.com/d/TdrVAPOs61v7AaW, pág. 2 parede, págs. 3–8 neons).
+- `src/assets/img/vit.webp` — vitrine da máquina com as duas prateleiras igualadas (vidro e fita de LED do nicho de baixo ajustados a partir do nicho de cima).
 - `src/styles/tweaks.css` — legibilidade no celular (`.stage.compact`); `src/styles/shop.css` — o que fica abaixo da máquina.
 - `src/styles/machine.css` — o CSS original, com fontes e imagens extraídas para `src/assets/`.
 
