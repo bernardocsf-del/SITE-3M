@@ -252,3 +252,12 @@
 @media (max-width:480px){.abar .sbtn{font-size:18px;letter-spacing:1.2px;padding:0 16px}}
 
 .pk-text b{font-weight:700;color:var(--gold-2)}
+
+/* card do pack pronto: preço numa linha só; quando o pack já está no pedido, o botão vira − n + */
+.pk-buy .pk-price b{white-space:nowrap}
+.pk-buy .pk-price span{white-space:nowrap}
+.pk-qty{flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 2px #a88f45,0 0 0 3px #3a2f10}
+.pk-qty button{width:46px;height:46px}
+.pk-qty button[disabled]{opacity:.35;cursor:not-allowed}
+.pk-qty output{min-width:34px}
+@container (max-width:300px){.pk-buy .pk-price b{font-size:24px}.pk-buy .sbtn{min-width:112px;padding:0 12px}}

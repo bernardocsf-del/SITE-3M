@@ -90,7 +90,7 @@ export default function App() {
     </div>
 
     <main className="shop">
-      <Presets snap={snap} onAdd={(p) => machine?.addPreset(p)} />
+      <Presets snap={snap} onAdd={(p) => machine?.addPreset(p)} onRemove={(p) => machine?.removePreset(p)} />
       <Order ref={orderRef} chips={snap?.chips || []} pending={n > 0 && n < 6 ? n : 0}
         onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={reopen} />
     </main>

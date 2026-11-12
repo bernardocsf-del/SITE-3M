@@ -371,6 +371,11 @@ export class Machine {
     this.syncTubes(); this.renderChips(); this.toast(preset.name + ' no pedido');
     return true;
   };
+  /* tira uma unidade do pack pronto que já está no pedido */
+  removePreset = (preset) => {
+    const k = this.S.packs.findIndex((p) => p.preset === preset.id);
+    if (k >= 0) this.changeQty(k, -1);
+  };
   /* põe as 6 latas na bandeja para trocar alguma antes de fechar */
   loadPreset = (preset) => {
     const S = this.S;
