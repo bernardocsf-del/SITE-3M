@@ -62,3 +62,31 @@
 .pinfo.tot .val{color:var(--gold-2);font-size:30px;text-shadow:0 0 12px rgba(224,205,142,.35)}
 .rack{top:1314px!important;height:68px!important}
 .stage.compact .pinfo.tot .val{font-size:32px}
+
+/* ── visores com cara de tela acesa ──
+   O texto emite luz (âmbar, como um display fluorescente), uma trama de pixels passa por cima de tudo,
+   o vidro tem reflexo e a tela fica afundada dentro da moldura de latão. */
+:root{--lit:#ffd98a;--lit-hi:#fff4d6;--lit-glow:rgba(255,176,64,.75);--lit-glow-2:rgba(255,150,40,.35)}
+.disp,.pinfo{isolation:isolate}
+.disp::before,.pinfo::before{content:"";position:absolute;inset:6px;border-radius:6px;z-index:-1;pointer-events:none;
+  background:radial-gradient(120% 140% at 50% 50%,#1a1206 0%,#0c0903 55%,#050402 100%);
+  box-shadow:inset 0 0 0 1px #000,inset 0 3px 10px rgba(0,0,0,.95),inset 0 0 26px rgba(255,160,50,.10)}
+.disp::after,.pinfo::after{content:"";position:absolute;inset:6px;border-radius:6px;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.03) 22%,transparent 46%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.42) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.26) 0 1px,transparent 1px 3px)!important;
+  box-shadow:inset 0 0 14px rgba(0,0,0,.75)}
+.pinfo{padding:0 28px!important}
+.disp{padding-left:26px!important;padding-right:26px!important}
+
+.pinfo .lbl,.d-tick,.d-price,.pinfo.tot .val,.d-row2 .code{color:var(--lit)!important;text-shadow:0 0 5px var(--lit-glow),0 0 16px var(--lit-glow-2)}
+.pinfo .val,.pinfo .cnt em,.d-name,.d-tick .tk span b{color:var(--lit-hi)!important;text-shadow:0 0 6px var(--lit-glow),0 0 18px var(--lit-glow-2)}
+.d-pitch{color:#ffe9bd;text-shadow:0 0 5px rgba(255,176,64,.5)}
+.pinfo .lbl small,.pinfo .val small,.pinfo .cnt,.d-row2,.d-price small{color:rgba(255,217,138,.72)!important;text-shadow:0 0 4px rgba(255,176,64,.45)}
+.pinfo .lbl small{opacity:1!important}
+.d-row2 .hint{color:#7fc0ff!important;text-shadow:0 0 6px rgba(90,167,255,.8)}
+.pill{background:var(--lit);color:#1a1000;box-shadow:0 0 10px rgba(255,176,64,.55);text-shadow:none}
+.disp.idle .d-name{color:rgba(255,217,138,.8)!important}
+.disp.idle .d-price{opacity:.45}
+.pinfo .cnt em.bump{animation:bump .35s ease-out}

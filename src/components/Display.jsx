@@ -49,7 +49,7 @@ export default function Display({ snap, compact }) {
             : compact ? '10 rótulos · 350 e 473 ml' : '10 rótulos · sour, IPA e imperial stout · 350 e 473 ml'}
         </span>
         <span className={'hint' + (c && !out ? ' go' : '')} id="d-hint">
-          {c ? (out ? 'esgotado' : full ? 'pack cheio' : compact ? 'toque de novo' : 'toque de novo para sugar') : ''}
+          {c ? (out ? 'esgotado' : full ? 'pack cheio' : 'toque de novo') : ''}
         </span>
       </div>
       <div className="d-pitch" id="d-pitch">
