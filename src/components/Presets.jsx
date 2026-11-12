@@ -3,7 +3,7 @@ import { CANS } from '../data/cans.js';
 import { PRESETS } from '../data/presets.js';
 import { money } from '../machine/engine.js';
 
-/* estilo do suporte dos packs: a (papelão), b (cesta preta), c (prateleira de latão), d (engradado de madeira). ?suporte=x troca para comparar. */
+/* estilo do suporte dos packs: a (papelão), b (cesta preta), c (prateleira de latão), d (engradado de madeira), e (vitrine com placa), f (cesta aberta), g (neon), h (engradado aberto). ?suporte=x troca para comparar. */
 const CARRIER = new URLSearchParams(location.search).get('suporte') || 'a';
 const BY_KEY = Object.fromEntries(CANS.map((c) => [c.key, c]));
 
@@ -20,6 +20,7 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
   return (
     <article className={'pk' + (available ? '' : ' off')} style={{ '--c1': colors[0], '--c2': colors[1] || colors[0], '--c3': colors[2] || colors[0] }}>
       <div className="pk-art" aria-hidden="true">
+        <div className="pk-sign"><b>{preset.name}</b></div>
         <div className="pk-handle" />
         <div className="pk-cans">
           {cans.map((c, i) => <img key={i} src={c.img} alt="" loading="lazy" style={{ '--i': i }} />)}
@@ -27,6 +28,7 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
         <div className="pk-carrier">
           <b>{preset.name}</b>
           <i>Three Monkeys Beer · six pack</i>
+          <em>{preset.line}</em>
         </div>
       </div>
       <span className="pk-tag">{preset.tag}</span>
