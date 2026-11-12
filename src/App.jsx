@@ -59,8 +59,8 @@ export default function App() {
           <div className="cab" />
           <div className="crown">
             <h1 className="sr">Six Pack Machine</h1>
-            <div className="eng l" aria-hidden="true">Six Pack<b>Machine</b></div>
-            <div className="eng r" aria-hidden="true">Escolha 6 latas<b>misture como quiser</b></div>
+            <div className="eng l" aria-hidden="true">Six Pack</div>
+            <div className="eng r" aria-hidden="true">Machine</div>
           </div>
 
           <Display snap={snap} compact={compact} catalog={catalog} />

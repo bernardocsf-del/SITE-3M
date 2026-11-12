@@ -156,3 +156,29 @@
 .stage.compact .tag i{font-size:.52em}
 .stage.compact .tag.tight{font-size:19px;gap:5px}
 .stage.compact .tag.out span{font-size:.56em;letter-spacing:1px}
+
+/* ── um visor só por prateleira: a régua inteira é a tela, com os preços nas posições das latas ── */
+.shelf .lip{position:relative;height:32px;padding:0;gap:0;border-radius:6px;overflow:hidden;
+  background:radial-gradient(140% 220% at 50% 50%,#1c1306 0%,#0c0903 60%,#050402 100%);
+  box-shadow:inset 0 0 0 1px #3a2f10,inset 0 0 0 2.5px #a88f45,inset 0 0 0 3.5px #000,inset 0 4px 9px rgba(0,0,0,.95),inset 0 0 22px rgba(255,160,50,.10),0 4px 8px rgba(0,0,0,.5)}
+.shelf .lip::after{content:"";position:absolute;inset:3.5px;border-radius:3px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.10) 0,transparent 45%),repeating-linear-gradient(0deg,rgba(0,0,0,.42) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(0,0,0,.26) 0 1px,transparent 1px 3px)}
+.tag,.tag.sel{background:none;box-shadow:none;border-radius:0}
+.tag::after{display:none}
+.tag.sel{background:radial-gradient(60% 120% at 50% 50%,rgba(255,176,64,.22),transparent 75%)}
+.tag.sel span{color:#fff;text-shadow:0 0 6px #ffd98a,0 0 16px var(--lit-glow)}
+/* desconto: só texto aceso, sem fundo */
+.tag .pct{padding:0;background:none;box-shadow:none;border-radius:0;font-size:.78em;letter-spacing:.3px;color:#ff6a4d;text-shadow:0 0 5px rgba(255,90,60,.9),0 0 14px rgba(255,70,40,.5)}
+.tag.sale span,.tag.sale.sel span{color:#ffb39e;text-shadow:0 0 5px rgba(255,110,80,.8),0 0 14px rgba(255,90,60,.4)}
+
+/* ── topo: "SIX PACK" à esquerda do selo e "MACHINE" à direita, na Motor Oil (a fonte do logotipo).
+   É texto de verdade, preenchido com a textura de latão da placa da máquina e com relevo, para ficar preso no aço. ── */
+.crown .eng{top:-24px!important;width:270px!important;height:66px!important;font-family:var(--logo)!important;font-weight:400!important;font-style:normal!important;
+  font-size:47px!important;line-height:66px!important;letter-spacing:3px!important;text-align:center!important;text-transform:uppercase;white-space:nowrap;
+  color:transparent!important;-webkit-text-fill-color:transparent;
+  background:linear-gradient(180deg,rgba(255,250,220,.55) 0,rgba(255,244,200,0) 34%,rgba(60,40,5,.0) 58%,rgba(50,32,4,.5) 100%),url(../assets/img/crown-plate-2.webp) center/190% 420% no-repeat!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  filter:drop-shadow(0 -1px 0 rgba(255,246,208,.6)) drop-shadow(0 2px 0 #3a2a08) drop-shadow(0 3px 0 rgba(0,0,0,.55)) drop-shadow(0 6px 6px rgba(0,0,0,.6))}
+.crown .eng.l,.crown .eng.r{font-size:54px!important;letter-spacing:3px!important;line-height:66px!important}
+.crown .eng.l{left:40px!important;right:auto!important}
+.crown .eng.r{right:40px!important;left:auto!important;top:-24px!important}
