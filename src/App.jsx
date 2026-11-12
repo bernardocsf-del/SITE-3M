@@ -91,8 +91,8 @@ export default function App() {
 
     <main className="shop">
       <Presets snap={snap} onAdd={(p) => machine?.addPreset(p)} />
-      <Order ref={orderRef} chips={snap?.chips || []} total={tot} packs={np} canSend={canSend} pending={n > 0 && n < 6 ? n : 0}
-        onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={reopen} onSend={send} />
+      <Order ref={orderRef} chips={snap?.chips || []} pending={n > 0 && n < 6 ? n : 0}
+        onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={reopen} />
     </main>
     <ActionBar n={n} packs={np} total={tot} canSend={canSend} onClose={() => machine?.closePack()} onSend={send} onSeeOrder={toOrder} />
     </>

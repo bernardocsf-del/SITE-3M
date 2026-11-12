@@ -1,8 +1,9 @@
 import { forwardRef } from 'react';
 import { money, packValue } from '../machine/engine.js';
 
-/* Seu pedido: os packs fechados em tamanho de dedo (botões de 48 px), fora do palco escalado. */
-const Order = forwardRef(function Order({ chips, total, packs, canSend, pending, onQty, onUndo, onReopen, onSend }, ref) {
+/* Seu pedido: os packs fechados em tamanho de dedo (botões de 48 px), fora do palco escalado.
+   O total e o "Enviar ao carrinho" ficam só na barra fixa. */
+const Order = forwardRef(function Order({ chips, pending, onQty, onUndo, onReopen }, ref) {
   return (
     <section className="shop-sec" aria-labelledby="order-h" ref={ref}>
       <header className="shop-head">
@@ -35,13 +36,6 @@ const Order = forwardRef(function Order({ chips, total, packs, canSend, pending,
           ))}
         </ul>
       )}
-      <div className="od-total">
-        <div>
-          <span>{packs + (packs === 1 ? ' pack' : ' packs')} · {packs * 6} latas</span>
-          <b>{money(total)}</b>
-        </div>
-        <button type="button" className="sbtn big" disabled={!canSend} onClick={onSend}>Enviar ao carrinho</button>
-      </div>
       {pending > 0 && <p className="od-note">Há {pending} {pending === 1 ? 'lata' : 'latas'} na bandeja: complete as 6 e feche o pack para ele entrar no pedido.</p>}
     </section>
   );
