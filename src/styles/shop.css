@@ -286,3 +286,7 @@
   box-shadow:0 0 0 1px #3a3a3a,0 0 0 2px rgba(168,143,69,.6),0 10px 26px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
 .gtoast.show{opacity:1;transform:translate(-50%,0)}
 .gtoast.warn{color:#ffb0a0;box-shadow:0 0 0 1px #3a3a3a,0 0 0 2px rgba(224,122,106,.7),0 10px 26px rgba(0,0,0,.7)}
+
+.pk-buy .pk-price s{opacity:.7}
+.pk-buy .pk-price em{font-style:normal;font-weight:700;color:#ff8a70}
+.sheet-note{margin:0;font-size:13.5px;line-height:1.35;color:var(--vac-2)}

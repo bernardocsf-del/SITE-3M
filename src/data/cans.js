@@ -39,6 +39,7 @@ export const CANS = [
   {
     "id": 21,
     "key": "im-sour-baby",
+    "regular": 20.83,
     "name": "I'm Sour, Baby!",
     "vol": 473,
     "style": "Sour · marshmallow",
@@ -138,6 +139,7 @@ export const CANS = [
   {
     "id": 16,
     "key": "classic-ipa-350",
+    "regular": 13.67,
     "name": "Classic IPA",
     "vol": 350,
     "style": "American IPA",

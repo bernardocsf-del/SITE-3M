@@ -36,7 +36,7 @@ const Order = forwardRef(function Order({ chips, pending, onQty, onUndo, onReope
           ))}
         </ul>
       )}
-      {pending > 0 && <p className="od-note">Há {pending} {pending === 1 ? 'lata' : 'latas'} na bandeja: complete as 6 e feche o pack para ele entrar no pedido.</p>}
+      {pending > 0 && <p className="od-note">{pending === 1 ? 'Há 1 lata solta na bandeja: ela fica' : 'Há ' + pending + ' latas soltas na bandeja: elas ficam'} de fora do pedido até você completar as 6 e fechar o pack.</p>}
     </section>
   );
 });

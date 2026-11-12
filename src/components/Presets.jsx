@@ -1,14 +1,13 @@
-import { CANS } from '../data/cans.js';
-import { PRESETS } from '../data/presets.js';
 import { money } from '../machine/engine.js';
 
 /* estilo do suporte dos packs: a (papelão), b (cesta preta), c (prateleira de latão), d (engradado de madeira), e (vitrine com placa), f (cesta aberta), g (neon), h (engradado aberto). ?suporte=x troca para comparar. */
 const CARRIER = new URLSearchParams(location.search).get('suporte') || 'g';
-const BY_KEY = Object.fromEntries(CANS.map((c) => [c.key, c]));
 
-function PresetCard({ preset, stock, inOrder, onAdd, onRemove }) {
-  const cans = preset.cans.map((k) => BY_KEY[k]);
+function PresetCard({ preset, byKey, stock, inOrder, onAdd, onRemove }) {
+  const cans = preset.cans.map((k) => byKey[k]);
   const price = cans.reduce((a, c) => a + c.price, 0);
+  const full = cans.reduce((a, c) => a + (c.regular > c.price ? c.regular : c.price), 0);
+  const off = full > price + 0.004 ? Math.round((1 - price / full) * 100) : 0;
   const litros = (cans.reduce((a, c) => a + c.vol, 0) / 1000).toFixed(1).replace('.', ',');
   const need = {}; cans.forEach((c) => (need[c.id] = (need[c.id] || 0) + 1));
   const available = !stock || Object.keys(need).every((id) => stock[id] >= need[id]);
@@ -35,7 +34,7 @@ function PresetCard({ preset, stock, inOrder, onAdd, onRemove }) {
         <div className="pk-buy">
           <div className="pk-price">
             <b>{money(price)}</b>
-            <span>6 latas · {litros} L</span>
+            <span>{off > 0 && <><s>{money(full)}</s> <em>−{off}%</em> · </>}6 latas · {litros} L</span>
           </div>
           {inOrder > 0 ? (
             /* já está no pedido: o botão vira a quantidade */
@@ -56,7 +55,9 @@ function PresetCard({ preset, stock, inOrder, onAdd, onRemove }) {
 }
 
 /* Packs já montados pela casa, logo abaixo da máquina. */
-export default function Presets({ snap, onAdd, onRemove }) {
+export default function Presets({ snap, catalog, presets, onAdd, onRemove }) {
+  const byKey = Object.fromEntries(catalog.map((c) => [c.key, c]));
+  if (!presets.length) return null;
   const count = (id) => (snap?.packs || []).filter((p) => p.preset === id).reduce((a, p) => a + p.qty, 0);
   return (
     <section className="shop-sec" aria-labelledby="presets-h">
@@ -65,7 +66,7 @@ export default function Presets({ snap, onAdd, onRemove }) {
         <p>Sem tempo de escolher? A casa já montou.</p>
       </header>
       <div className="pk-grid" data-carrier={CARRIER}>
-        {PRESETS.map((p) => <PresetCard key={p.id} preset={p} stock={snap?.stock} inOrder={count(p.id)} onAdd={onAdd} onRemove={onRemove} />)}
+        {presets.map((p) => <PresetCard key={p.id} preset={p} byKey={byKey} stock={snap?.stock} inOrder={count(p.id)} onAdd={onAdd} onRemove={onRemove} />)}
       </div>
     </section>
   );

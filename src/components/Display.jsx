@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
-import { money } from '../machine/engine.js';
+import { money, offPct } from '../machine/engine.js';
 import { useRestartClass } from '../machine/useMachine.js';
 
 const IDLE_TICK = '<b>Monte quantos packs quiser</b> · misture rótulos e tamanhos · <b>6 latas por pack</b> · preço por lata no display · feche o pack e comece o próximo';
@@ -21,7 +21,10 @@ function fitName(n) {
   while (n.scrollWidth > n.clientWidth + 1 && fs > 21) { fs -= 1; n.style.setProperty('--name-fs', fs + 'px'); if (fs < 30) n.style.letterSpacing = '.6px'; }
 }
 
-export default function Display({ snap, compact }) {
+export default function Display({ snap, compact, catalog }) {
+  /* o resumo do visor em repouso sai do catálogo: quantos rótulos e quais tamanhos há hoje */
+  const vols = [...new Set(catalog.map((x) => x.vol))].sort((a, b) => a - b);
+  const resumo = catalog.length + (catalog.length === 1 ? ' rótulo' : ' rótulos') + ' · ' + vols.join(' e ') + ' ml';
   const c = snap?.sel || null;
   const out = c ? snap.selStock <= 0 : false;
   const full = (snap?.pack.length || 0) >= 6;
@@ -39,7 +42,7 @@ export default function Display({ snap, compact }) {
     <div className={'disp' + (c ? '' : ' idle')} id="disp" aria-live="polite" ref={dispRef}>
       <div className="d-name" id="d-name" ref={nameRef}>{c ? c.name : 'Toque numa lata'}</div>
       <div className="d-price" id="d-price">
-        {c ? <><small>a lata</small>{money(c.price)}</> : <><small>preço</small>R$ --,--</>}
+        {c ? <><small>{offPct(c) ? <><s>{money(c.regular)}</s> −{offPct(c)}%</> : 'a lata'}</small>{money(c.price)}</> : <><small>preço</small>R$ --,--</>}
       </div>
       <div className="d-row2">
         <span className="code" id="d-code">{c ? c.code : '—'}</span>
@@ -47,7 +50,7 @@ export default function Display({ snap, compact }) {
         <span className="meta" id="d-meta">
           {c
             ? c.vol + ' ml · ' + (c.abvTxt || c.abv) + ' · ' + (c.ibu && !compact ? c.ibu + ' ibu · ' : '') + 'restam ' + snap.selStock
-            : compact ? '10 rótulos · 350 e 473 ml' : '10 rótulos · sour, IPA e imperial stout · 350 e 473 ml'}
+            : resumo}
         </span>
         <span className={'hint' + (c && !out ? ' go' : '')} id="d-hint">
           {c ? (out ? 'esgotado' : full ? 'pack cheio' : 'toque de novo') : ''}

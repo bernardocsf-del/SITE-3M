@@ -3,13 +3,14 @@
    é animada direto no DOM, quadro a quadro, exatamente como no artefato original.
    O estado de compra (pack atual, packs fechados, estoque, visor, avisos) é publicado
    para o React por subscribe()/getSnapshot(). */
-import { CANS } from '../data/cans.js';
-import { PRESETS } from '../data/presets.js';
-import { ROWS, COLX, PARK_X, MAN_Y, SLOTX, PACK_FLOOR, packH, PA, PB, TX, GAL_END, BR, PW, FIT, FD, TRAY, UNION, TRAY_IMG } from './geometry.js';
+import { presetsFor } from '../data/catalog.js';
+import { ROWS, layoutShelves, PARK_X, MAN_Y, SLOTX, PACK_FLOOR, packH, PA, PB, TX, GAL_END, BR, PW, FIT, FD, TRAY, UNION, TRAY_IMG } from './geometry.js';
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 export const money = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const DEMO_STOCK = 12; /* estoque de demonstração por rótulo, até ligar na loja */
+const SPEED = 0.7;     /* a viagem da lata dura 70% do tempo original */
+export const offPct = (c) => (c.regular > c.price ? Math.round((1 - c.price / c.regular) * 100) : 0);
 export const packValue = (arr) => arr.reduce((a, i) => a + i.c.price, 0);
 
 function glass(d) {
@@ -28,21 +29,21 @@ function elbow(x, y) { const f = FIT.elA, s = FD / f.dd; return img('elA', x - f
 function tee(x, y) { const f = FIT.teeT, s = FD / f.dd; return img('teeT', x - f.cx * s, y - f.cy * s, f.w * s, f.h * s); }
 
 export class Machine {
-  constructor(root) {
+  constructor(root, catalog) {
     this.root = root;
     this.dead = false;
     this.listeners = new Set();
     this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.cans = CANS.map((c) => ({ ...c }));
-    this.cans.forEach((c) => { c.row = ROWS.find((r) => r.vol === c.vol) || ROWS[1]; c.ratio = c.vol === 473 ? 0.395 : 0.528; });
-    ROWS.forEach((r) => { this.cans.filter((c) => c.row === r).forEach((c, i) => { c.col = i; c.code = r.key + (i + 1); }); });
+    this.cans = layoutShelves(catalog.map((c) => ({ ...c })));
+    this.presets = presetsFor(catalog);
     this.byKey = {}; this.cans.forEach((c) => (this.byKey[c.key] = c));
-    this.stock = {}; this.cans.forEach((c) => (this.stock[c.id] = DEMO_STOCK));
+    this.stock = {}; this.cans.forEach((c) => (this.stock[c.id] = c.stock ?? DEMO_STOCK));
     this.S = { sel: null, pack: [], packs: [], seq: 0, busy: {}, q: {}, arm: {}, armAt: {} };
     this.ui = { flash: 0, chips: [], chipsVer: 0, toast: null, panel: null, idleMeta: true };
     this.snap = null;
     this.onKey = (e) => { if (e.key === 'Enter') this.confirmAdd(); };
     this.build();
+    this.cans.forEach((c) => { if (this.stock[c.id] <= 0) this.markOut(c); });
     this.renderChips();
     this.emit();
     document.addEventListener('keydown', this.onKey);
@@ -101,15 +102,15 @@ export class Machine {
       S.arm[r.key] = Promise.resolve(); S.armAt[r.key] = null;
     });
     this.cans.forEach((c) => {
-      const r = c.row, w = r.canH * c.ratio, x = COLX[c.col];
+      const r = c.row, w = c.h * c.ratio, x = c.x;
       const el = document.createElement('div'); el.className = 'c-can'; el.id = 'can-' + c.id; el.tabIndex = 0;
       el.setAttribute('role', 'button'); el.setAttribute('aria-label', c.code + ' ' + (c.disp || c.name));
-      el.style.cssText = 'left:' + (x - w / 2) + 'px;top:' + (r.floor - r.canH) + 'px;height:' + r.canH + 'px;width:' + w + 'px';
-      el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">';
+      el.style.cssText = 'left:' + (x - w / 2) + 'px;top:' + (r.floor - c.h) + 'px;height:' + c.h + 'px;width:' + w + 'px';
+      el.innerHTML = '<img src="' + c.img + '" alt="' + c.name + '">' + (offPct(c) ? '<span class="off">−' + offPct(c) + '%</span>' : '');
       el.addEventListener('click', () => this.tap(c));
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); this.tap(c); } });
       $('cans').appendChild(el);
-      const tag = document.createElement('div'); tag.className = 'tag'; tag.id = 'tag-' + c.id;
+      const tag = document.createElement('div'); tag.className = 'tag' + (offPct(c) ? ' sale' : '') + (c.count > 5 ? ' tight' : ''); tag.id = 'tag-' + c.id;
       tag.innerHTML = '<b>' + c.code + '</b><span><i>R$</i>' + c.price.toFixed(2).replace('.', ',') + '</span>';
       tag.addEventListener('click', () => this.tap(c));
       $('lip-' + r.key).appendChild(tag);
@@ -119,7 +120,7 @@ export class Machine {
       if (this.dead) return;
       this.cans.forEach((c) => {
         const el = $('can-' + c.id), im = el.querySelector('img');
-        if (im.naturalWidth) { c.ratio = im.naturalWidth / im.naturalHeight; const w = c.row.canH * c.ratio; el.style.width = w + 'px'; el.style.left = (COLX[c.col] - w / 2) + 'px'; }
+        if (im.naturalWidth) { c.ratio = im.naturalWidth / im.naturalHeight; c.h = Math.min(c.h, c.maxW / c.ratio); const w = c.h * c.ratio; el.style.width = w + 'px'; el.style.height = c.h + 'px'; el.style.top = (c.row.floor - c.h) + 'px'; el.style.left = (c.x - w / 2) + 'px'; }
       });
     });
 
@@ -163,16 +164,16 @@ export class Machine {
       if (this.dead) return;
       const car = this.carOf(c), hose = this.hoseOf(c);
       car.classList.remove('ready');
-      const cw = c.row.canH * c.ratio + 10; /* o tubo é da largura da lata */
-      if (S.armAt[k] !== c.col) {
+      const cw = c.h * c.ratio + 10; /* o tubo é da largura da lata */
+      if (S.armAt[k] !== c.x) {
         if (S.armAt[k] !== null) { hose.style.height = '0px'; await wait(reduce ? 0 : 300); }
-        const from = S.armAt[k] === null ? PARK_X : COLX[S.armAt[k]];
-        car.style.left = COLX[c.col] + 'px'; car.style.width = (cw + 24) + 'px'; car.style.marginLeft = (-(cw + 24) / 2) + 'px';
+        const from = S.armAt[k] === null ? PARK_X : S.armAt[k];
+        car.style.left = c.x + 'px'; car.style.width = (cw + 24) + 'px'; car.style.marginLeft = (-(cw + 24) / 2) + 'px';
         hose.style.width = cw + 'px'; hose.style.marginLeft = (-cw / 2) + 'px';
-        await wait(reduce ? 0 : Math.min(500, 140 + Math.abs(COLX[c.col] - from) * 0.6));
-        S.armAt[k] = c.col;
+        await wait(reduce ? 0 : Math.min(500, 140 + Math.abs(c.x - from) * 0.6));
+        S.armAt[k] = c.x;
       }
-      const top = c.row.floor - c.row.canH, carBottom = c.row.rail + 14 + 34;
+      const top = c.row.floor - c.h, carBottom = c.row.rail + 14 + 34;
       hose.style.height = Math.max(0, top - 8 - carBottom) + 'px';
       await wait(reduce ? 0 : 340);
       if (!this.dead) car.classList.add('ready');
@@ -219,12 +220,12 @@ export class Machine {
     S.busy[c.id] = true;
     const el = $('can-' + c.id), car = this.carOf(c), k = c.row.key;
     await S.arm[k]; if (this.dead) return;
-    if (S.armAt[k] !== c.col) { await this.armTo(c); }
+    if (S.armAt[k] !== c.x) { await this.armTo(c); }
     car.classList.add('vac', 'on'); car.classList.remove('ready'); el.classList.remove('sel');
     const slot = Math.max(0, S.pack.indexOf(it)), tx = SLOTX[slot];
     /* 1. mangueira acima */
-    const top = c.row.floor - c.row.canH, carBottom = c.row.rail + 48, dist = top - carBottom + c.row.canH;
-    await this.frames(reduce ? 10 : Math.min(900, 420 + dist * 0.9), (p) => {
+    const top = c.row.floor - c.h, carBottom = c.row.rail + 48, dist = top - carBottom + c.h;
+    await this.frames(reduce ? 10 : SPEED * Math.min(900, 420 + dist * 0.9), (p) => {
       const yy = -dist * (p < 0.2 ? (p / 0.2) * (p / 0.2) * 0.08 : 0.08 + (p - 0.2) / 0.8 * 0.92);
       const clip = Math.max(0, carBottom - (top + yy));
       el.style.transform = 'translateY(' + yy.toFixed(1) + 'px)'; el.style.clipPath = 'inset(' + clip.toFixed(1) + 'px 0 0 0)';
@@ -243,8 +244,8 @@ export class Machine {
     /* 2. a galeria */
     const RH = c.vol === 473 ? 30 : 23, rw = RH * c.ratio, ride = document.createElement('div');
     ride.className = 'ride'; ride.style.cssText = 'height:' + RH + 'px;width:' + rw + 'px;opacity:0'; ride.innerHTML = '<img src="' + c.img + '" alt="">'; $('rides').appendChild(ride);
-    const gy = c.row.rail, cx = COLX[c.col], GX = TX - 4;
-    await this.frames(reduce ? 10 : Math.min(700, 220 + (GX - cx) * 0.55), (p) => {
+    const gy = c.row.rail, cx = c.x, GX = TX - 4;
+    await this.frames(reduce ? 10 : SPEED * Math.min(700, 220 + (GX - cx) * 0.55), (p) => {
       const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2, x = cx + (GX - cx) * e;
       ride.style.opacity = Math.min(1, p * 5); ride.style.transform = 'translate(' + (x - rw / 2) + 'px,' + (gy - RH / 2) + 'px) rotate(90deg)';
     });
@@ -254,7 +255,7 @@ export class Machine {
     const path = $('pp'), L = path.getTotalLength();
     const joinLen = k === 'B' ? (() => { let lo = 0, hi = L; for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2, p = path.getPointAtLength(m); if (p.y < PB) lo = m; else hi = m; } return lo; })() : (TX - GAL_END - 4);
     const endLen = (() => { let lo = 0, hi = L; for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2, p = path.getPointAtLength(m); if (p.y < MAN_Y - 1 || p.x > tx) lo = m; else hi = m; } return lo; })();
-    await this.frames(reduce ? 10 : Math.max(500, (endLen - joinLen) * 0.95), (p) => {
+    await this.frames(reduce ? 10 : SPEED * Math.max(500, (endLen - joinLen) * 0.95), (p) => {
       const e = p < 0.3 ? (p / 0.3) * (p / 0.3) * 0.22 : 0.22 + (p - 0.3) / 0.7 * 0.78;
       const len = joinLen + (endLen - joinLen) * e, pt = path.getPointAtLength(len), q = path.getPointAtLength(Math.max(0, len - 3));
       const ang = Math.atan2(pt.y - q.y, pt.x - q.x) * 180 / Math.PI + 90;
@@ -271,7 +272,7 @@ export class Machine {
     /* 4. sobe pela boca até a bandeja, voltando ao seu tamanho */
     const H = packH(c), w = H * c.ratio, d = document.createElement('div');
     d.className = 'drop'; d.style.cssText = 'height:' + H + 'px;width:' + w + 'px;left:' + (tx - w / 2) + 'px;top:' + (PACK_FLOOR - H) + 'px'; d.innerHTML = '<img src="' + c.img + '" alt="">'; $('drops').appendChild(d);
-    await this.frames(reduce ? 10 : 460, (p) => {
+    await this.frames(reduce ? 10 : SPEED * 460, (p) => {
       const e = p < 0.8 ? (1 - Math.pow(1 - p / 0.8, 3)) : 1, over = p > 0.8 ? Math.sin((p - 0.8) / 0.2 * Math.PI) * 6 : 0;
       const yy = H * (1 - e) - over, sc = 0.6 + 0.4 * e;
       d.style.transform = 'translateY(' + yy.toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')'; d.style.clipPath = 'inset(0 0 ' + Math.max(0, yy).toFixed(1) + 'px 0)';
@@ -283,6 +284,8 @@ export class Machine {
   }
   markOut(c) {
     const el = this.$('can-' + c.id), tg = this.$('tag-' + c.id);
+    /* a lata esgotada fica na prateleira, apagada, em vez de deixar um buraco */
+    el.style.opacity = ''; el.classList.remove('sel');
     el.classList.add('out'); tg.classList.add('out'); tg.querySelector('span').textContent = 'ESGOTADO';
   }
   placeInPack(it) {
@@ -362,7 +365,7 @@ export class Machine {
      Dois packs com as mesmas 6 latas (em qualquer ordem) são o mesmo pack: somam quantidade em vez de virar outra linha.
      Se a composição é a de um pack pronto, ele leva o nome do pack pronto — mesmo montado à mão ou reaberto e fechado sem trocar nada. */
   sig(items) { return items.map((i) => i.c.id).sort((a, b) => a - b).join('-'); }
-  presetFor(sig) { return PRESETS.find((p) => this.sig(p.cans.map((key) => ({ c: this.byKey[key] }))) === sig); }
+  presetFor(sig) { return this.presets.find((p) => this.sig(p.cans.map((key) => ({ c: this.byKey[key] }))) === sig); }
   storePack(items) {
     const sig = this.sig(items), same = this.S.packs.find((p) => p.sig === sig);
     if (same) { same.qty++; return same; }
@@ -416,12 +419,14 @@ export class Machine {
   toast(msg, warn) { this.ui.toast = { msg, warn: !!warn, id: (this.ui.toast?.id || 0) + 1 }; this.emit(); }
 
   /* ---------- carrinho ---------- */
+  /* Envia os packs fechados (e a bandeja, se estiver completa). Latas soltas na bandeja ficam de fora e continuam lá. */
   sendToCart = () => {
     const S = this.S, n = S.pack.length;
-    if (!(n === 6 || (n === 0 && S.packs.length))) { this.toast('Faltam ' + (6 - n) + ' latas para fechar o pack', true); return; }
-    const all = []; S.packs.forEach((p) => { for (let k = 0; k < p.qty; k++) p.items.forEach((i) => all.push(i.c)); }); S.pack.forEach((i) => all.push(i.c));
+    if (!S.packs.length && n < 6) { this.toast('Faltam ' + (6 - n) + ' latas para fechar o pack', true); return; }
+    const all = []; S.packs.forEach((p) => { for (let k = 0; k < p.qty; k++) p.items.forEach((i) => all.push(i.c)); });
+    if (n === 6) S.pack.forEach((i) => all.push(i.c));
     const agg = {}; all.forEach((c) => { agg[c.id] = agg[c.id] || { c, n: 0 }; agg[c.id].n++; });
-    this.ui.panel = { lines: Object.values(agg), count: all.length, total: all.reduce((a, c) => a + c.price, 0) };
+    this.ui.panel = { lines: Object.values(agg), count: all.length, total: all.reduce((a, c) => a + c.price, 0), left: n < 6 ? n : 0 };
     this.emit();
   };
   closePanel = () => { this.ui.panel = null; this.emit(); };

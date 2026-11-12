@@ -5,14 +5,14 @@ const noop = () => () => {};
 const none = () => null;
 
 /* Monta o motor sobre o palco depois que o React desenhou o esqueleto, e o desmonta ao sair. */
-export function useMachine() {
+export function useMachine(catalog) {
   const stageRef = useRef(null);
   const [machine, setMachine] = useState(null);
   useLayoutEffect(() => {
-    const m = new Machine(stageRef.current);
+    const m = new Machine(stageRef.current, catalog);
     setMachine(m);
     return () => m.destroy();
-  }, []);
+  }, [catalog]);
   const snap = useSyncExternalStore(machine ? machine.subscribe : noop, machine ? machine.getSnapshot : none);
   return { stageRef, machine, snap };
 }

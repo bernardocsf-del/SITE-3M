@@ -31,3 +31,32 @@ export const FIT = {
 };
 export const UNION = union;
 export const TRAY_IMG = tray;
+
+/* ---------- prateleiras montadas a partir do catálogo ----------
+   O catálogo muda (nem sempre 10 rótulos, nem sempre metade de cada tamanho), então nada aqui é fixo:
+   - as latas maiores vão para a prateleira de cima; o corte entre as prateleiras fica na troca de tamanho
+     mais próxima do meio, ou no meio mesmo se só houver um tamanho ou se uma prateleira passar de MAX_ROW;
+   - em cada prateleira as latas se distribuem por igual na largura (mesmas posições das etiquetas);
+   - a lata nunca passa da altura livre da prateleira nem da largura da sua coluna: se precisar, encolhe. */
+export const MAX_ROW = 7;
+const SHELF_X0 = 40, SHELF_W = 704, ARM = 48, GAP = 22;
+const NATURAL_H = (vol) => (vol >= 400 ? 230 : 176);
+const GUESS_RATIO = (vol) => (vol >= 400 ? 0.395 : 0.528);
+export function layoutShelves(cans) {
+  const list = cans.map((c, i) => ({ c, i })).sort((a, b) => b.c.vol - a.c.vol || a.i - b.i).map((o) => o.c);
+  const n = list.length;
+  let cut = -1;
+  for (let i = 1; i < n; i++) if (list[i].vol !== list[i - 1].vol && (cut < 0 || Math.abs(i - n / 2) < Math.abs(cut - n / 2))) cut = i;
+  if (cut < 0 || cut > MAX_ROW || n - cut > MAX_ROW) cut = Math.ceil(n / 2);
+  [list.slice(0, cut), list.slice(cut)].forEach((group, r) => {
+    const row = ROWS[r], cell = SHELF_W / Math.max(1, group.length), room = row.floor - (row.rail + ARM) - GAP;
+    group.forEach((c, i) => {
+      c.row = row; c.col = i; c.count = group.length; c.code = row.key + (i + 1);
+      c.x = SHELF_X0 + cell * (i + 0.5);
+      c.ratio = c.ratio || GUESS_RATIO(c.vol);
+      c.maxW = cell - 10;
+      c.h = Math.min(NATURAL_H(c.vol), room, c.maxW / c.ratio);
+    });
+  });
+  return list;
+}

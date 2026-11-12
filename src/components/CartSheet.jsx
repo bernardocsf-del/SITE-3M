@@ -18,6 +18,7 @@ export default function CartSheet({ panel, onClose }) {
           <span>{packs + (packs === 1 ? ' pack' : ' packs')} · {panel.count} latas</span>
           <b>{money(panel.total)}</b>
         </div>
+        {panel.left > 0 && <p className="sheet-note">{panel.left === 1 ? '1 lata solta na bandeja ficou' : panel.left + ' latas soltas na bandeja ficaram'} de fora. Complete as 6 e feche o pack para incluir.</p>}
         <button type="button" className="sbtn ghost" onClick={onClose}>Continuar comprando</button>
       </div>
     </div>
