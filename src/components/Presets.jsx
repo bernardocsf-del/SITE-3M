@@ -31,12 +31,11 @@ function PresetCard({ preset, stock, inOrder, onAdd }) {
           <em>{preset.line}</em>
         </div>
       </div>
-      <span className="pk-tag">{preset.tag}</span>
       {inOrder > 0 && <span className="pk-count">{inOrder}× no pedido</span>}
       <div className="pk-body">
         <h3>{preset.name}</h3>
         <p className="pk-line">{preset.line}</p>
-        <p className="pk-text">{preset.text}</p>
+        <p className="pk-text"><b>{preset.tag}.</b> {preset.text}</p>
         <div className="pk-buy">
           <div className="pk-price">
             <b>{money(price)}</b>

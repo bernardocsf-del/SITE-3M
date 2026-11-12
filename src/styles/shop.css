@@ -250,3 +250,5 @@
 .abar-sum b{white-space:nowrap}
 .abar .sbtn{flex:0 0 auto;min-height:52px;padding:0 20px;font-size:19px;letter-spacing:1.4px}
 @media (max-width:480px){.abar .sbtn{font-size:18px;letter-spacing:1.2px;padding:0 16px}}
+
+.pk-text b{font-weight:700;color:var(--gold-2)}
