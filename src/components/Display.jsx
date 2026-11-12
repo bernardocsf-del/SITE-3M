@@ -15,9 +15,10 @@ function setTick(el, text) {
     void el.offsetWidth; el.classList.add('run');
   }
 }
+/* nomes longos encolhem até caber (o tamanho vai por variável, porque o CSS original fixa o tamanho com !important) */
 function fitName(n) {
-  let fs = 31; n.style.fontSize = fs + 'px'; n.style.letterSpacing = '1.5px';
-  while (n.scrollWidth > n.clientWidth + 1 && fs > 20) { fs -= 1; n.style.fontSize = fs + 'px'; if (fs < 26) n.style.letterSpacing = '.8px'; }
+  let fs = 38; n.style.setProperty('--name-fs', fs + 'px'); n.style.letterSpacing = '1.5px';
+  while (n.scrollWidth > n.clientWidth + 1 && fs > 21) { fs -= 1; n.style.setProperty('--name-fs', fs + 'px'); if (fs < 30) n.style.letterSpacing = '.6px'; }
 }
 
 export default function Display({ snap, compact }) {
@@ -30,8 +31,8 @@ export default function Display({ snap, compact }) {
   useRestartClass(dispRef, 'flash', snap?.flash);
   useLayoutEffect(() => {
     const n = nameRef.current;
-    if (c) fitName(n); else n.style.fontSize = '';
-  }, [c]);
+    if (c) fitName(n); else { n.style.removeProperty('--name-fs'); n.style.letterSpacing = ''; }
+  }, [c, compact]);
   useLayoutEffect(() => { setTick(tickRef.current, tick); }, [tick, snap?.flash, compact]);
 
   return (

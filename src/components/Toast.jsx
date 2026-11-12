@@ -9,7 +9,7 @@ export default function Toast({ toast }) {
     return () => clearTimeout(t);
   }, [toast]);
   return (
-    <div className={'toast' + (show ? ' show' : '') + (toast?.warn ? ' warn' : '')} id="toast">
+    <div className={'gtoast' + (show ? ' show' : '') + (toast?.warn ? ' warn' : '')} id="toast" role="status" aria-live="polite">
       {toast?.msg || ''}
     </div>
   );

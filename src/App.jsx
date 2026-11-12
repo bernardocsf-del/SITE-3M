@@ -22,7 +22,6 @@ export default function App() {
   const compact = useStageFit(wrapRef, stageRef, STAGE_W, STAGE_H);
   const orderRef = useRef(null);
   const smooth = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
-  const toMachine = () => wrapRef.current.scrollIntoView({ behavior: smooth(), block: 'start' });
   const toTray = () => window.scrollTo({ top: Math.max(0, wrapRef.current.offsetTop + wrapRef.current.offsetHeight * 0.62 - window.innerHeight / 2), behavior: smooth() });
   const toOrder = () => orderRef.current.scrollIntoView({ behavior: smooth(), block: 'start' });
 
@@ -34,7 +33,8 @@ export default function App() {
   const tot = closedV + (n === 6 ? pv : 0), np = closedN + (n === 6 ? 1 : 0);
   const canSend = n === 6 || (n === 0 && packs.length > 0);
   const send = () => machine?.sendToCart(); /* ação final: a confirmação aparece onde o cliente está */
-  const reopen = (k) => { const before = machine.S.pack.length; machine.reopenPack(k); if (!before) toTray(); else toMachine(); };
+  /* com a bandeja ocupada o pack não reabre: o aviso aparece ali mesmo, sem tirar o cliente do lugar */
+  const reopen = (k) => { const busy = machine.S.pack.length > 0; machine.reopenPack(k); if (!busy) toTray(); };
 
   return (
     <>
@@ -51,7 +51,6 @@ export default function App() {
           </div>
 
           <Display snap={snap} compact={compact} />
-          <Toast toast={snap?.toast} />
 
           <div className="vit" id="vit" />
           <div id="shelves" />
@@ -93,6 +92,7 @@ export default function App() {
       <Order ref={orderRef} chips={snap?.chips || []} pending={n > 0 && n < 6 ? n : 0}
         onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={reopen} />
     </main>
+    <Toast toast={snap?.toast} />
     <CartSheet panel={snap?.panel} onClose={() => machine?.closePanel()} />
     <ActionBar n={n} packs={np} total={tot} canSend={canSend} onClose={() => machine?.closePack()} onSend={send} onSeeOrder={toOrder} />
     </>

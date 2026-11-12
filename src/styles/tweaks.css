@@ -111,3 +111,6 @@
 .stage.compact .chip{padding:0 5px 3px}
 .stage.compact .chip .band{height:19px;font-size:13px;letter-spacing:.6px}
 .stage.compact .chip .n{min-width:27px;height:27px;border-radius:14px;font-size:17px;top:-7px;right:-11px}
+
+/* nome do rótulo no visor: encolhe até caber (ver fitName) */
+.disp:not(.idle) .d-name{font-size:var(--name-fs,38px)!important}

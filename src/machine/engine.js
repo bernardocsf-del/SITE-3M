@@ -407,7 +407,7 @@ export class Machine {
   };
   reopenPack = (k) => {
     const S = this.S;
-    if (S.pack.length) { this.toast('Esvazie a bandeja para reabrir um pack', true); return; }
+    if (S.pack.length) { this.toast('Há latas na bandeja: feche ou devolva antes de trocar este pack', true); return; }
     const p = S.packs[k];
     if (p.qty > 1) { p.qty--; S.pack = p.items.map((i) => ({ c: i.c, uid: ++S.seq })); }
     else { S.packs.splice(k, 1); S.pack = p.items; }
