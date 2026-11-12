@@ -4,7 +4,7 @@ import { PRESETS } from '../data/presets.js';
 import { money } from '../machine/engine.js';
 
 /* estilo do suporte dos packs: a (papelão), b (cesta preta), c (prateleira de latão), d (engradado de madeira), e (vitrine com placa), f (cesta aberta), g (neon), h (engradado aberto). ?suporte=x troca para comparar. */
-const CARRIER = new URLSearchParams(location.search).get('suporte') || 'a';
+const CARRIER = new URLSearchParams(location.search).get('suporte') || 'g';
 const BY_KEY = Object.fromEntries(CANS.map((c) => [c.key, c]));
 
 function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
