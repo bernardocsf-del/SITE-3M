@@ -7,7 +7,7 @@ import tray from '../assets/img/tray.webp';
 export const STAGE_W = 784, STAGE_H = 1678;
 export const ROWS = [
   { key: 'A', vol: 473, rail: 262, floor: 574, canH: 230 },
-  { key: 'B', vol: 350, rail: 634, floor: 884, canH: 176 },
+  { key: 'B', vol: 350, rail: 646, floor: 884, canH: 176 } /* trilho 12 px abaixo do original: o tubo não cobre mais as etiquetas da prateleira de cima */,
 ];
 export const COLX = [110, 251, 392, 533, 674];
 export const PARK_X = 690;                         /* cada pórtico espera na ponta da porta */
