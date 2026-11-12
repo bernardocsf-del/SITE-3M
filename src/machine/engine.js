@@ -7,7 +7,7 @@ import { CANS } from '../data/cans.js';
 import { ROWS, COLX, PARK_X, MAN_Y, SLOTX, PACK_FLOOR, packH, PA, PB, TX, GAL_END, BR, PW, FIT, FD, TRAY, UNION, TRAY_IMG } from './geometry.js';
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-export const money = (v) => 'R$ ' + v.toFixed(2).replace('.', ',');
+export const money = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const DEMO_STOCK = 12; /* estoque de demonstração por rótulo, até ligar na loja */
 export const packValue = (arr) => arr.reduce((a, i) => a + i.c.price, 0);
 
