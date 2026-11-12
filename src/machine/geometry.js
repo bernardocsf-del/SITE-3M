@@ -5,9 +5,12 @@ import union from '../assets/img/union.webp';
 import tray from '../assets/img/tray.webp';
 
 export const STAGE_W = 784, STAGE_H = 1678;
+/* Folga igual nas duas prateleiras: 22 px entre o braço (trilho + 48) e o topo da lata.
+   Em relação ao artefato original, o trilho A desceu 12 px, o trilho B desceu 12 px (para não cobrir as etiquetas de cima)
+   e o piso B desceu 8 px. */
 export const ROWS = [
-  { key: 'A', vol: 473, rail: 262, floor: 574, canH: 230 },
-  { key: 'B', vol: 350, rail: 646, floor: 884, canH: 176 } /* trilho 12 px abaixo do original: o tubo não cobre mais as etiquetas da prateleira de cima */,
+  { key: 'A', vol: 473, rail: 274, floor: 574, canH: 230 },
+  { key: 'B', vol: 350, rail: 646, floor: 892, canH: 176 },
 ];
 export const COLX = [110, 251, 392, 533, 674];
 export const PARK_X = 690;                         /* cada pórtico espera na ponta da porta */
