@@ -90,3 +90,24 @@
 .disp.idle .d-name{color:rgba(255,217,138,.8)!important}
 .disp.idle .d-price{opacity:.45}
 .pinfo .cnt em.bump{animation:bump .35s ease-out}
+
+/* ── packs fechados como objetos: seis latinhas numa cinta de papelão, dentro de um compartimento ── */
+.rack{padding:0 14px 0 12px!important}
+.rack .chips{align-items:flex-end;gap:16px;padding:0 10px 0 6px;height:58px;border-radius:6px;overflow-y:visible;
+  background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.18) 60%,rgba(255,236,170,.07) 92%,rgba(255,236,170,.16) 100%);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.85),inset 0 0 0 1px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.06)}
+.rack .empty{align-self:center}
+.chip{position:relative;flex:0 0 auto;height:auto;padding:0 5px 3px;margin:0 0 3px;border:0;border-radius:0;background:none;box-shadow:none;gap:0;cursor:pointer;font:inherit;color:inherit;
+  display:block;filter:drop-shadow(0 4px 4px rgba(0,0,0,.7))}
+.chip:focus-visible{outline:2px solid var(--vac-2);outline-offset:3px}
+.chip .minis{display:flex;align-items:flex-end;gap:1px;height:auto;padding:0;background:none;border-radius:0;cursor:inherit}
+.chip .minis img{height:31px;width:auto;max-width:none;filter:none}
+.chip .minis img.tall{height:41px}
+.chip .band{position:absolute;left:0;right:0;bottom:0;height:17px;border-radius:2px;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;
+  font-family:var(--title);font-weight:700;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:#2b1c0c;text-shadow:0 1px 0 rgba(255,235,190,.3);
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 1px,transparent 1px 3px),linear-gradient(180deg,#c9a068,#a67c47 55%,#86623a);box-shadow:inset 0 1px 0 rgba(255,240,200,.45),inset 0 -1px 0 rgba(0,0,0,.3)}
+.chip .n{position:absolute;top:-5px;right:-9px;min-width:22px;height:22px;padding:0 4px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--title);font-weight:800;font-size:13px;color:#1f1a0c;background:linear-gradient(180deg,#efe0a8,#bba154 55%,#8f7a3c);box-shadow:0 0 0 1.5px #3a2f10,0 2px 4px rgba(0,0,0,.6)}
+.stage.compact .chip{padding:0 5px 3px}
+.stage.compact .chip .band{height:19px;font-size:13px;letter-spacing:.6px}
+.stage.compact .chip .n{min-width:27px;height:27px;border-radius:14px;font-size:17px;top:-7px;right:-11px}
