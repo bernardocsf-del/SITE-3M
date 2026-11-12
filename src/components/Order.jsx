@@ -7,7 +7,7 @@ const Order = forwardRef(function Order({ chips, total, packs, canSend, pending,
     <section className="shop-sec" aria-labelledby="order-h" ref={ref}>
       <header className="shop-head">
         <h2 id="order-h">Seu pedido</h2>
-        <p>{chips.length ? 'Ajuste as quantidades, reabra um pack para trocar latas ou remova.' : 'Os packs que você fechar na máquina ou adicionar dos packs prontos aparecem aqui.'}</p>
+        <p>{chips.length ? 'Ajuste a quantidade, troque latas ou remova.' : 'Os packs que você fechar ou adicionar aparecem aqui.'}</p>
       </header>
       {chips.length > 0 && (
         <ul className="od-list">

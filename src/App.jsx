@@ -76,16 +76,10 @@ export default function App() {
             </button>
           </div>
 
-          <div className="calc">
-            <div className="ro total">
-              <div className="k">Total do pedido</div>
-              <div className="v" id="ro-total">
-                <small className="l">{np + (np === 1 ? ' pack' : ' packs')}</small><span>{money(tot)}</span><small className="r">{np * 6 + ' latas'}</small>
-              </div>
-            </div>
-            <button className="btn" id="b-cart" type="button" disabled={!canSend} onClick={() => machine?.sendToCart()}>
-              Enviar ao carrinho
-            </button>
+          <div className="pinfo tot">
+            <div className="lbl">Total do pedido<small>{np * 6 + ' latas'}</small></div>
+            <div className="val" id="ro-total">{money(tot)}</div>
+            <div className="cnt">Packs<em>{np}</em></div>
           </div>
 
           <Rack chips={snap?.chips || []} ver={snap?.chipsVer || 0} compact={compact} onOpenOrder={toOrder} onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={(k) => machine?.reopenPack(k)} />
@@ -96,7 +90,7 @@ export default function App() {
     </div>
 
     <main className="shop">
-      <Presets snap={snap} onAdd={(p) => machine?.addPreset(p)} onOpen={(p) => { if (machine?.loadPreset(p)) toTray(); else toMachine(); }} />
+      <Presets snap={snap} onAdd={(p) => machine?.addPreset(p)} />
       <Order ref={orderRef} chips={snap?.chips || []} total={tot} packs={np} canSend={canSend} pending={n > 0 && n < 6 ? n : 0}
         onQty={(k, d) => machine?.changeQty(k, d)} onUndo={(k) => machine?.undoPack(k)} onReopen={reopen} onSend={send} />
     </main>

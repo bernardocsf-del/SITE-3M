@@ -7,7 +7,7 @@ import { money } from '../machine/engine.js';
 const CARRIER = new URLSearchParams(location.search).get('suporte') || 'g';
 const BY_KEY = Object.fromEntries(CANS.map((c) => [c.key, c]));
 
-function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
+function PresetCard({ preset, stock, inOrder, onAdd }) {
   const cans = preset.cans.map((k) => BY_KEY[k]);
   const price = cans.reduce((a, c) => a + c.price, 0);
   const litros = (cans.reduce((a, c) => a + c.vol, 0) / 1000).toFixed(1).replace('.', ',');
@@ -37,15 +37,14 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
         <h3>{preset.name}</h3>
         <p className="pk-line">{preset.line}</p>
         <p className="pk-text">{preset.text}</p>
-        <div className="pk-price">
-          <b>{money(price)}</b>
-          <span>6 latas · {litros} L · {money(price / 6)} por lata</span>
-        </div>
-        <div className="pk-actions">
+        <div className="pk-buy">
+          <div className="pk-price">
+            <b>{money(price)}</b>
+            <span>6 latas · {litros} L</span>
+          </div>
           <button type="button" className="sbtn" disabled={!available} onClick={add}>
-            {!available ? 'Sem estoque' : added ? 'Adicionado ✓' : 'Adicionar ao pedido'}
+            {!available ? 'Sem estoque' : added ? 'Adicionado ✓' : 'Adicionar'}
           </button>
-          <button type="button" className="sbtn ghost" disabled={!available} onClick={() => onOpen(preset)}>Trocar latas</button>
         </div>
       </div>
     </article>
@@ -53,16 +52,16 @@ function PresetCard({ preset, stock, inOrder, onAdd, onOpen }) {
 }
 
 /* Packs já montados pela casa, logo abaixo da máquina. */
-export default function Presets({ snap, onAdd, onOpen }) {
+export default function Presets({ snap, onAdd }) {
   const count = (id) => (snap?.packs || []).filter((p) => p.preset === id).reduce((a, p) => a + p.qty, 0);
   return (
     <section className="shop-sec" aria-labelledby="presets-h">
       <header className="shop-head">
         <h2 id="presets-h">Packs prontos</h2>
-        <p>Sem tempo de escolher? A casa já montou. Adicione direto ao pedido ou leve para a máquina e troque as latas que quiser.</p>
+        <p>Sem tempo de escolher? A casa já montou.</p>
       </header>
       <div className="pk-grid" data-carrier={CARRIER}>
-        {PRESETS.map((p) => <PresetCard key={p.id} preset={p} stock={snap?.stock} inOrder={count(p.id)} onAdd={onAdd} onOpen={onOpen} />)}
+        {PRESETS.map((p) => <PresetCard key={p.id} preset={p} stock={snap?.stock} inOrder={count(p.id)} onAdd={onAdd} />)}
       </div>
     </section>
   );

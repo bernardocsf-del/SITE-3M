@@ -54,3 +54,11 @@
 .stage.compact .panel .list{font-size:18px;line-height:1.25}
 .stage.compact .panel .row{font-size:25px;padding-top:6px}
 .stage.compact .panel button{font-size:24px;padding:6px 22px;right:16px;top:12px;border-radius:8px}
+
+/* ── rodapé da máquina reorganizado: Fechar pack maior, total em faixa inteira (igual a "Seu pack"), packs fechados.
+   O "Enviar ao carrinho" saiu daqui: fica na barra fixa e em "Seu pedido". ── */
+.closebar{top:1174px;height:64px}
+.pinfo.tot{top:1248px;height:56px}
+.pinfo.tot .val{color:var(--gold-2);font-size:30px;text-shadow:0 0 12px rgba(224,205,142,.35)}
+.rack{top:1314px!important;height:68px!important}
+.stage.compact .pinfo.tot .val{font-size:32px}
