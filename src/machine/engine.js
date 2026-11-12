@@ -4,6 +4,7 @@
    O estado de compra (pack atual, packs fechados, estoque, visor, avisos) é publicado
    para o React por subscribe()/getSnapshot(). */
 import { CANS } from '../data/cans.js';
+import { PRESETS } from '../data/presets.js';
 import { ROWS, COLX, PARK_X, MAN_Y, SLOTX, PACK_FLOOR, packH, PA, PB, TX, GAL_END, BR, PW, FIT, FD, TRAY, UNION, TRAY_IMG } from './geometry.js';
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -315,7 +316,7 @@ export class Machine {
   closePack = () => {
     const S = this.S, reduce = this.reduce;
     if (S.pack.length < 6) { this.toast('Complete as 6 latas para fechar o pack', true); return; }
-    const arr = S.pack; S.packs.push({ items: arr, qty: 1 }); S.pack = [];
+    const arr = S.pack; const stored = this.storePack(arr); S.pack = [];
     /* o inverso da chegada: cada lata desce pela sua boca e o pack aparece embaixo */
     const T = reduce ? 10 : 420, GAP = reduce ? 0 : 80;
     arr.forEach((it, i) => {
@@ -334,7 +335,7 @@ export class Machine {
       }, i * GAP);
     });
     this.emit();
-    setTimeout(() => { if (this.dead) return; this.renderChips(); this.toast('Pack ' + S.packs.length + ' guardado · bandeja livre para o próximo'); }, (arr.length - 1) * GAP + T + 260);
+    setTimeout(() => { if (this.dead) return; this.renderChips(); this.toast((stored.name || 'Pack ' + (S.packs.indexOf(stored) + 1)) + (stored.qty > 1 ? ' · agora ' + stored.qty + '×' : ' guardado') + ' · bandeja livre'); }, (arr.length - 1) * GAP + T + 260);
   };
   canAfford(items) { const need = {}; items.forEach((i) => (need[i.c.id] = (need[i.c.id] || 0) + 1)); return Object.keys(need).every((id) => this.stock[id] >= need[id]); }
   renderChips() {
@@ -357,6 +358,20 @@ export class Machine {
     });
   }
 
+  /* ---------- identidade do pack: a composição ----------
+     Dois packs com as mesmas 6 latas (em qualquer ordem) são o mesmo pack: somam quantidade em vez de virar outra linha.
+     Se a composição é a de um pack pronto, ele leva o nome do pack pronto — mesmo montado à mão ou reaberto e fechado sem trocar nada. */
+  sig(items) { return items.map((i) => i.c.id).sort((a, b) => a - b).join('-'); }
+  presetFor(sig) { return PRESETS.find((p) => this.sig(p.cans.map((key) => ({ c: this.byKey[key] }))) === sig); }
+  storePack(items) {
+    const sig = this.sig(items), same = this.S.packs.find((p) => p.sig === sig);
+    if (same) { same.qty++; return same; }
+    const preset = this.presetFor(sig);
+    const pack = { items, qty: 1, sig, name: preset?.name, preset: preset?.id };
+    this.S.packs.push(pack);
+    return pack;
+  }
+
   /* ---------- packs prontos ---------- */
   presetItems(preset) { return preset.cans.map((key) => ({ c: this.byKey[key], uid: ++this.S.seq })); }
   canAffordPreset(preset) { return this.canAfford(preset.cans.map((key) => ({ c: this.byKey[key] }))); }
@@ -364,10 +379,9 @@ export class Machine {
   addPreset = (preset) => {
     const S = this.S;
     if (!this.canAffordPreset(preset)) { this.toast('Sem estoque para o ' + preset.name, true); return false; }
-    const same = S.packs.find((p) => p.preset === preset.id);
-    const items = same ? same.items : this.presetItems(preset);
+    const items = this.presetItems(preset);
     items.forEach((i) => this.stock[i.c.id]--);
-    if (same) same.qty++; else S.packs.push({ items, qty: 1, name: preset.name, preset: preset.id });
+    this.storePack(items);
     this.syncTubes(); this.renderChips(); this.toast(preset.name + ' no pedido');
     return true;
   };
